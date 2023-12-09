@@ -28,7 +28,13 @@ Install JDK by following the instructions depending on your Operating System: [J
 
 Run the following command to start the program
 <!-- Todo: compile and then run! -->
+
 ```sh
+mkdir production
+# Compile
+javac -d .\production\ .\src\com\example\java\*java
+# Run
+java -XX:+ShowCodeDetailsInExceptionMessages -cp .\production src.com.example.java.WalletManager
 
 ```
 
