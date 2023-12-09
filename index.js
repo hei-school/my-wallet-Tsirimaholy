@@ -1,4 +1,5 @@
 const readline = require('readline');
+const {addIncome, subtractExpense, flush: flushMoney} =  require("./money")
 
 const wallet = {
   balance: 0,
@@ -11,19 +12,15 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-function addIncome(amount) {
-  wallet.balance += amount;
+function doAddIncome(amount) {
+  wallet.balance = addIncome(wallet, amount)
   wallet.transactions.push({ type: 'income', amount });
   wallet.history.push({ action: 'Added income', amount });
   console.log(`Added ${amount} to your wallet. New balance: ${wallet.balance}`);
 }
 
-function subtractExpense(amount) {
-  if (amount > wallet.balance) {
-    console.log('Insufficient funds');
-    return;
-  }
-  wallet.balance -= amount;
+function doSubtractExpense(amount) {
+  wallet.balance = subtractExpense(wallet, amount);
   wallet.transactions.push({ type: 'expense', amount });
   wallet.history.push({ action: 'Subtracted expense', amount });
   console.log(`Subtracted ${amount} from your wallet. New balance: ${wallet.balance}`);
@@ -46,9 +43,9 @@ function flushWallet() {
   console.log('Are you sure you want to flush your wallet? This will remove all transactions and history.');
   rl.question('(y/n): ', (answer) => {
     if (answer === 'y') {
-      wallet.balance = 0;
-      wallet.transactions = [];
-      wallet.history = [];
+      const {transactions,balance} = flushMoney(wallet)
+      wallet.transactions = transactions;
+      wallet.balance = balance
       console.log('Wallet flushed successfully.');
     } else {
       console.log('Flushing canceled.');
@@ -75,13 +72,13 @@ function mainMenu() {
     switch (option) {
       case '1':
         rl.question('Enter income amount: ', (income) => {
-          addIncome(parseFloat(income));
+          doAddIncome(parseFloat(income));
           mainMenu();
         });
         break;
       case '2':
         rl.question('Enter expense amount: ', (expense) => {
-          subtractExpense(parseFloat(expense));
+          doSubtractExpense(parseFloat(expense));
           mainMenu();
         });
         break;
