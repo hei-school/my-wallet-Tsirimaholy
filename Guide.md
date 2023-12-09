@@ -8,6 +8,14 @@ Access this branch [feature/lua](https://github.com/hei-school/cc-d1-my-wallet-T
 
 Install lua by following the instructions depending on your Operating System: [Lua installation instruction](https://www.lua.org/download.html)]
 
+### Running the program
+
+Run the following command to start the program
+
+```sh
+lua main.lua
+```
+
 ## Java
 
 Access this branch [feature/java](https://github.com/hei-school/cc-d1-my-wallet-Tsirimaholy/tree/feature/java)
@@ -15,6 +23,14 @@ Access this branch [feature/java](https://github.com/hei-school/cc-d1-my-wallet-
 ### Requirements
 
 Install JDK by following the instructions depending on your Operating System: [JDK installation instruction](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+
+### Running the program
+
+Run the following command to start the program
+<!-- Todo: compile and then run! -->
+```sh
+
+```
 
 ## JavaScript
 
@@ -24,6 +40,14 @@ Access this branch [feature/javascript](https://github.com/hei-school/cc-d1-my-w
 
 Install nodejs by following the instructions depending on your Operating System: [Installation instruction](https://nodejs.org/en/download/current)
 
+### Running the program
+
+Run the following command to start the program
+
+```sh
+node index.js
+```
+
 ## Python
 
  Access this branch [python](https://github.com/hei-school/ccc-d1-my-wallet-Tsirimaholy/tree/feature/python)
@@ -31,3 +55,11 @@ Install nodejs by following the instructions depending on your Operating System:
 ### Requirements
 
 Install python by following the instructions depending on your Operating System: [Installation instruction](https://www.python.org/downloads/)
+
+### Running the program
+
+Run the following command to start the program
+
+```sh
+python main.py
+```
