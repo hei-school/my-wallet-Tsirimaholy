@@ -1,5 +1,5 @@
 function addIncome(wallet, amount) {
-    return wallet.balance + amount
+    return wallet.moneyEntry.balance + amount
 }
 
 function subtractExpense(wallet, amount) {
@@ -7,11 +7,11 @@ function subtractExpense(wallet, amount) {
         console.log('Insufficient funds');
         return;
     }
-    return wallet.balance - amount;
+    return wallet.moneyEntry.balance - amount;
 }
 
 function flush(wallet) {
-    return {...wallet, balance: 0, transactions: []}
+    return {...wallet.moneyEntry, balance: 0, transactions: 0};
 }
 
 exports.flush = flush
