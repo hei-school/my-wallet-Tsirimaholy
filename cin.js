@@ -9,9 +9,10 @@ function add(wallet, cin) {
     console.log("The cin entry is Full")
 }
 
-function remove(wallet, cin) {
+function remove(wallet, index) {
     let list = [...wallet.cinEntry.list];
-    return list.filter(currentCin => currentCin.id !== cin.id);
+    list.splice(index,1);
+    return list;
 }
 
 exports.remove = remove
