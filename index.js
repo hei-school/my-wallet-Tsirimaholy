@@ -59,17 +59,27 @@ async function doInsertCin() {
 }
 
 function listCin() {
+    console.log("----List of cin------")
     console.table(wallet.cinEntry.list);
 }
 
 async function doRemoveCin() {
     console.log("Choose which one do you wanna remove by his index")
-    console.table(wallet.cinEntry.list);
+
+    if (wallet.cinEntry.list.length<1){
+        console.log("There is no CIN yet on the wallet");
+        return
+    }
+
+    listCin();
     let cinIndex = await asyncQuestion("The cin index");
     const toRemove = wallet.cinEntry.list[cinIndex];
-
-    wallet.cinEntry.list = cinAction.remove(wallet, cinIndex);
-    wallet.history.push({type: "Removed cin", label: toRemove.owner})
+    try {
+        wallet.cinEntry.list = cinAction.remove(wallet, cinIndex);
+        wallet.history.push({type: "Removed cin", label: toRemove.owner})
+    }catch (e) {
+        console.error(e.message);
+    }
 }
 
 function doAddIncome(amount) {
@@ -88,8 +98,8 @@ function doSubtractExpense(amount) {
         moneyEntry.transactions.push({type: 'expense', amount});
         wallet.history.push({action: 'Subtracted expense', amount});
         console.log(`Subtracted ${amount} from your wallet. New balance: ${moneyEntry.balance}`);
-    }catch (e) {
-        console.log(e.message)
+    } catch (e) {
+        console.error(e.message)
     }
 }
 
@@ -128,8 +138,6 @@ function exit() {
 }
 
 async function moneySubMenu() {
-    console.log('Welcome to your Wallet Manager!');
-
     let option = "";
     while (option !== "6") {
         console.log('1. Add Income');
@@ -157,7 +165,6 @@ async function moneySubMenu() {
                 await flushWallet();
                 break;
             case '6':
-                exit();
                 break;
             default:
                 console.log('Invalid option.');
@@ -166,8 +173,64 @@ async function moneySubMenu() {
     }
 }
 
-moneySubMenu();
+async function cinSubMenu() {
+    let option = "";
 
+    while (option !== "0") {
+        console.log("CIN Submenu");
+        console.log("0. Exit");
+        console.log("1. Add new");
+        console.log("2. Remove One");
+        console.log("3. List all");
+
+
+        option = await asyncQuestion('Enter your choice: ');
+        switch (option) {
+            case '1':
+                await doInsertCin();
+                break;
+            case '2':
+                await doRemoveCin();
+                break;
+            case '3':
+                listCin();
+                break;
+            case '0':
+                break
+            default:
+                console.log("Invalid option");
+                break;
+        }
+    }
+}
+async function mainMenu() {
+    let option = "";
+
+    while (option !== "0") {
+        console.log("Choose which menu you wanna access");
+        console.log("0. Exit");
+        console.log("1. Money");
+        console.log("2. CIN");
+
+        option = await asyncQuestion('Enter your choice: ');
+        switch (option) {
+            case '1':
+                await moneySubMenu();
+                break;
+            case '2':
+                await cinSubMenu();
+                break;
+            case '0':
+                exit()
+                break
+            default:
+                console.log("Invalid option");
+                break;
+        }
+    }
+}
+
+mainMenu()
 IReadLine.on('close', () => {
     process.exit(0);
 });
