@@ -34,7 +34,7 @@ const IReadLine = readline.createInterface({
 const asyncQuestion = util.promisify(IReadLine.question).bind(IReadLine);
 
 
-const promptMe = (promptQuery) => {
+const syncQuestion = (promptQuery) => {
     let answer;
     IReadLine.question(promptQuery, (receivedInput) => {
         answer = receivedInput;
