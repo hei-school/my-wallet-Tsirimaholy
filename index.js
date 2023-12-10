@@ -54,6 +54,16 @@ function doInsertCin() {
     wallet.history.push({"type": "add cin", label: cinInfos.owner})
 }
 
+function doRemoveCin() {
+    console.log("Choose which one do you wanna remove by his index")
+    console.table(wallet.cinEntry.list);
+    let cinIndex = promptMe("The cin index");
+    const toRemove = wallet.cinEntry.list[cinIndex];
+
+    wallet.cinEntry.list = cinAction.remove(wallet, cinIndex);
+    wallet.history.push({type: "Removed cin", label: toRemove.owner})
+}
+
 function doAddIncome(amount) {
     const moneyEntry = wallet.moneyEntry
     moneyEntry.balance = addIncome(wallet, amount)
