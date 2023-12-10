@@ -7,7 +7,7 @@ const wallet = {
   history: [],
 };
 
-const rl = readline.createInterface({
+const IReadLine = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
@@ -41,7 +41,7 @@ function viewHistory() {
 
 function flushWallet() {
   console.log('Are you sure you want to flush your wallet? This will remove all transactions and history.');
-  rl.question('(y/n): ', (answer) => {
+  IReadLine.question('(y/n): ', (answer) => {
     if (answer === 'y') {
       const {transactions,balance} = flushMoney(wallet)
       wallet.transactions = transactions;
@@ -56,7 +56,7 @@ function flushWallet() {
 
 function exit() {
   console.log('Exiting the application.');
-  rl.close();
+  IReadLine.close();
 }
 
 function mainMenu() {
@@ -68,16 +68,16 @@ function mainMenu() {
   console.log('5. Flush Wallet');
   console.log('6. Exit');
 
-  rl.question('Enter your choice: ', (option) => {
+  IReadLine.question('Enter your choice: ', (option) => {
     switch (option) {
       case '1':
-        rl.question('Enter income amount: ', (income) => {
+        IReadLine.question('Enter income amount: ', (income) => {
           doAddIncome(parseFloat(income));
           mainMenu();
         });
         break;
       case '2':
-        rl.question('Enter expense amount: ', (expense) => {
+        IReadLine.question('Enter expense amount: ', (expense) => {
           doSubtractExpense(parseFloat(expense));
           mainMenu();
         });
@@ -106,6 +106,6 @@ function mainMenu() {
 
 mainMenu();
 
-rl.on('close', () => {
+IReadLine.on('close', () => {
   process.exit(0);
 });
