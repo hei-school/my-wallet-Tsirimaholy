@@ -1,6 +1,7 @@
 const readline = require('readline');
 const {addIncome, subtractExpense, flush: flushMoney} = require("./money")
 const cinAction = require("./cin")
+const util = require("util");
 const wallet = {
     history: [],
     moneyEntry: {
@@ -30,6 +31,9 @@ const IReadLine = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
+const asyncQuestion = util.promisify(IReadLine.question).bind(IReadLine);
+
+
 const promptMe = (promptQuery) => {
     let answer;
     IReadLine.question(promptQuery, (receivedInput) => {
@@ -38,7 +42,7 @@ const promptMe = (promptQuery) => {
     return answer;
 }
 
-function doInsertCin() {
+async function doInsertCin() {
     const cinInfos = {
         owner: '',
         number: '',
@@ -46,9 +50,9 @@ function doInsertCin() {
     }
 
     console.log("Enter the following infos:");
-    cinInfos.owner = promptMe('[1]: First name and Last name of the owner: ');
-    cinInfos.number = promptMe('[2]: Cin number');
-    cinInfos.label = promptMe('[2]: Label (Optional)');
+    cinInfos.owner = await asyncQuestion('[1]: First name and Last name of the owner: ');
+    cinInfos.number = await asyncQuestion('[2]: Cin number');
+    cinInfos.label = await asyncQuestion('[2]: Label (Optional)');
 
     cinAction.add(wallet, cinInfos);
     wallet.history.push({"type": "add cin", label: cinInfos.owner})
@@ -58,10 +62,10 @@ function listCin() {
     console.table(wallet.cinEntry.list);
 }
 
-function doRemoveCin() {
+async function doRemoveCin() {
     console.log("Choose which one do you wanna remove by his index")
     console.table(wallet.cinEntry.list);
-    let cinIndex = promptMe("The cin index");
+    let cinIndex = await asyncQuestion("The cin index");
     const toRemove = wallet.cinEntry.list[cinIndex];
 
     wallet.cinEntry.list = cinAction.remove(wallet, cinIndex);
@@ -79,10 +83,14 @@ function doAddIncome(amount) {
 
 function doSubtractExpense(amount) {
     const moneyEntry = wallet.moneyEntry
-    moneyEntry.balance = subtractExpense(wallet, amount);
-    moneyEntry.transactions.push({type: 'expense', amount});
-    wallet.history.push({action: 'Subtracted expense', amount});
-    console.log(`Subtracted ${amount} from your wallet. New balance: ${moneyEntry.balance}`);
+    try {
+        moneyEntry.balance = subtractExpense(wallet, amount);
+        moneyEntry.transactions.push({type: 'expense', amount});
+        wallet.history.push({action: 'Subtracted expense', amount});
+        console.log(`Subtracted ${amount} from your wallet. New balance: ${moneyEntry.balance}`);
+    }catch (e) {
+        console.log(e.message)
+    }
 }
 
 function viewBalance() {
@@ -99,20 +107,19 @@ function viewHistory() {
     console.log('');
 }
 
-function flushWallet() {
+async function flushWallet() {
     const moneyEntry = wallet.moneyEntry;
     console.log('Are you sure you want to flush your wallet? This will remove all transactions and history.');
-    IReadLine.question('(y/n): ', (answer) => {
-        if (answer === 'y') {
-            const {transactions, balance} = flushMoney(wallet)
-            moneyEntry.transactions = transactions;
-            moneyEntry.balance = balance
-            console.log('Wallet flushed successfully.');
-        } else {
-            console.log('Flushing canceled.');
-        }
-        moneySubMenu();
-    });
+    const answer = asyncQuestion('(y/n): ');
+    if (answer === 'y') {
+        const {transactions, balance} = flushMoney(wallet)
+        moneyEntry.transactions = transactions;
+        moneyEntry.balance = balance
+        console.log('Wallet flushed successfully.');
+    } else {
+        console.log('Flushing canceled.');
+    }
+    await moneySubMenu();
 }
 
 function exit() {
@@ -120,36 +127,31 @@ function exit() {
     IReadLine.close();
 }
 
-function moneySubMenu() {
+async function moneySubMenu() {
     console.log('Welcome to your Wallet Manager!');
-    console.log('1. Add Income');
-    console.log('2. Subtract Expense');
-    console.log('3. View Balance');
-    console.log('4. View History');
-    console.log('5. Flush Wallet');
-    console.log('6. Exit');
 
-    IReadLine.question('Enter your choice: ', (option) => {
+    let option = "";
+    while (option !== "6") {
+        console.log('1. Add Income');
+        console.log('2. Subtract Expense');
+        console.log('3. View Balance');
+        console.log('4. View History');
+        console.log('5. Flush Wallet');
+        console.log('6. Exit')
+
+        option = await asyncQuestion('Enter your choice: ');
         switch (option) {
             case '1':
-                IReadLine.question('Enter income amount: ', (income) => {
-                    doAddIncome(parseFloat(income));
-                    moneySubMenu();
-                });
+                doAddIncome(parseFloat(await asyncQuestion('Enter income amount: ')));
                 break;
             case '2':
-                IReadLine.question('Enter expense amount: ', (expense) => {
-                    doSubtractExpense(parseFloat(expense));
-                    moneySubMenu();
-                });
+                doSubtractExpense(parseFloat(await asyncQuestion('Enter expense amount: ')));
                 break;
             case '3':
                 viewBalance();
-                moneySubMenu();
                 break;
             case '4':
                 viewHistory();
-                moneySubMenu();
                 break;
             case '5':
                 flushWallet();
@@ -159,10 +161,9 @@ function moneySubMenu() {
                 break;
             default:
                 console.log('Invalid option.');
-                moneySubMenu();
                 break;
         }
-    });
+    }
 }
 
 moneySubMenu();
