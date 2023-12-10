@@ -111,7 +111,7 @@ function flushWallet() {
         } else {
             console.log('Flushing canceled.');
         }
-        mainMenu();
+        moneySubMenu();
     });
 }
 
@@ -120,7 +120,7 @@ function exit() {
     IReadLine.close();
 }
 
-function mainMenu() {
+function moneySubMenu() {
     console.log('Welcome to your Wallet Manager!');
     console.log('1. Add Income');
     console.log('2. Subtract Expense');
@@ -134,22 +134,22 @@ function mainMenu() {
             case '1':
                 IReadLine.question('Enter income amount: ', (income) => {
                     doAddIncome(parseFloat(income));
-                    mainMenu();
+                    moneySubMenu();
                 });
                 break;
             case '2':
                 IReadLine.question('Enter expense amount: ', (expense) => {
                     doSubtractExpense(parseFloat(expense));
-                    mainMenu();
+                    moneySubMenu();
                 });
                 break;
             case '3':
                 viewBalance();
-                mainMenu();
+                moneySubMenu();
                 break;
             case '4':
                 viewHistory();
-                mainMenu();
+                moneySubMenu();
                 break;
             case '5':
                 flushWallet();
@@ -159,13 +159,13 @@ function mainMenu() {
                 break;
             default:
                 console.log('Invalid option.');
-                mainMenu();
+                moneySubMenu();
                 break;
         }
     });
 }
 
-mainMenu();
+moneySubMenu();
 
 IReadLine.on('close', () => {
     process.exit(0);
