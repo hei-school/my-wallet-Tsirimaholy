@@ -3,9 +3,8 @@ function addIncome(wallet, amount) {
 }
 
 function subtractExpense(wallet, amount) {
-    if (amount > wallet.balance) {
-        console.log('Insufficient funds');
-        return;
+    if (amount > wallet.moneyEntry.balance) {
+        throw new Error('Insufficient funds');
     }
     return wallet.moneyEntry.balance - amount;
 }
