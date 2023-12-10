@@ -1,6 +1,6 @@
 const readline = require('readline');
 const {addIncome, subtractExpense, flush: flushMoney} = require("./money")
-
+const cinAction = require("./cin")
 const wallet = {
     history: [],
     moneyEntry: {
@@ -9,6 +9,7 @@ const wallet = {
     },
     cinEntry: {
         list: [],
+        maxCapacity: 2,
     },
     bankCardEntry: {
         list: []
@@ -30,10 +31,34 @@ const IReadLine = readline.createInterface({
     output: process.stdout,
 });
 
+function doInsertCin(){
+    const cinInfos = {
+        owner: '',
+        number: '',
+        label: 'default'
+    }
+
+    console.log("Enter the following infos:");
+    IReadLine.question('[1]: First name and Last name of the owner: ', (owner) => {
+        cinInfos.owner=owner;
+    })
+    IReadLine.question('[2]: Cin number', (number) => {
+        cinInfos.number = number;
+    })
+    IReadLine.question('[2]: Label (Optional)', (answer) => {
+        cinInfos.label = answer;
+    })
+
+
+    cinAction.add(wallet, cinInfos);
+    wallet.history.push({"type": "add cin", label: cinInfos.owner})
+}
+
 function doAddIncome(amount) {
     const moneyEntry = wallet.moneyEntry
     moneyEntry.balance = addIncome(wallet, amount)
     moneyEntry.transactions.push({type: 'income', amount});
+
     wallet.history.push({action: 'Added income', amount});
     console.log(`Added ${amount} to your wallet. New balance: ${moneyEntry.balance}`);
 }
