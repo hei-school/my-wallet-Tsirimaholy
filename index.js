@@ -30,8 +30,15 @@ const IReadLine = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
+const promptMe = (promptQuery) => {
+    let answer;
+    IReadLine.question(promptQuery, (receivedInput) => {
+        answer = receivedInput;
+    })
+    return answer;
+}
 
-function doInsertCin(){
+function doInsertCin() {
     const cinInfos = {
         owner: '',
         number: '',
@@ -39,16 +46,9 @@ function doInsertCin(){
     }
 
     console.log("Enter the following infos:");
-    IReadLine.question('[1]: First name and Last name of the owner: ', (owner) => {
-        cinInfos.owner=owner;
-    })
-    IReadLine.question('[2]: Cin number', (number) => {
-        cinInfos.number = number;
-    })
-    IReadLine.question('[2]: Label (Optional)', (answer) => {
-        cinInfos.label = answer;
-    })
-
+    cinInfos.owner = promptMe('[1]: First name and Last name of the owner: ');
+    cinInfos.number = promptMe('[2]: Cin number');
+    cinInfos.label = promptMe('[2]: Label (Optional)');
 
     cinAction.add(wallet, cinInfos);
     wallet.history.push({"type": "add cin", label: cinInfos.owner})
