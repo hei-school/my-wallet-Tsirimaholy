@@ -110,7 +110,7 @@ function viewHistory() {
 async function flushWallet() {
     const moneyEntry = wallet.moneyEntry;
     console.log('Are you sure you want to flush your wallet? This will remove all transactions and history.');
-    const answer = asyncQuestion('(y/n): ');
+    const answer = await asyncQuestion('(y/n): ');
     if (answer === 'y') {
         const {transactions, balance} = flushMoney(wallet)
         moneyEntry.transactions = transactions;
@@ -154,7 +154,7 @@ async function moneySubMenu() {
                 viewHistory();
                 break;
             case '5':
-                flushWallet();
+                await flushWallet();
                 break;
             case '6':
                 exit();
