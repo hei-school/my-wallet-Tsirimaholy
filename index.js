@@ -54,13 +54,14 @@ async function doInsertCin() {
     cinInfos.number = await asyncQuestion('[2]: Cin number');
     cinInfos.label = await asyncQuestion('[2]: Label (Optional)');
 
-    cinAction.add(wallet, cinInfos);
+    let {list}= cinAction.add(wallet, cinInfos);
+    wallet.cinEntry.list = list;
     wallet.history.push({"type": "add cin", label: cinInfos.owner})
 }
 
 function listCin() {
     console.log("----List of cin------")
-    console.table(wallet.cinEntry.list);
+    console.table(wallet.cinEntry.list.map(value => value.owner));
 }
 
 async function doRemoveCin() {
@@ -76,7 +77,7 @@ async function doRemoveCin() {
     const toRemove = wallet.cinEntry.list[cinIndex];
     try {
         wallet.cinEntry.list = cinAction.remove(wallet, cinIndex);
-        wallet.history.push({type: "Removed cin", label: toRemove.owner})
+        wallet.history.push({type: "Removed cin", label: toRemove.owner});
     }catch (e) {
         console.error(e.message);
     }
