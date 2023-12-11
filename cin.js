@@ -5,13 +5,16 @@ function isFull(wallet) {
 
 function add(wallet, cin) {
     if (!isFull(wallet))
-        return {...wallet.cinEntry, list: [...wallet.cinEntry.list, cin]}
-    console.log("The cin entry is Full")
+        return {...wallet.cinEntry, list: [...wallet.cinEntry.list, cin]};
+    return wallet;
 }
 
 function remove(wallet, index) {
     let list = [...wallet.cinEntry.list];
-    list.splice(index,1);
+    if (index < 0 || index >= list.length) {
+        throw new RangeError("The index should be between 0 and list.length(0<=index<length)")
+    }
+    list.splice(index, 1);
     return list;
 }
 
